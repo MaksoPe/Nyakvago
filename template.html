@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A4 Paper with Three Sections, Headers, and Text Boxes</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            padding: 0;
+            margin: auto;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            page-break-after: always;
+        }
+
+        .section {
+            width: 100%;
+            height: calc((297mm - 30px) / 3); /* Adjust height to account for 10px separation zones */
+            box-sizing: border-box;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin-bottom: 10px; /* Add a 10px margin at the bottom of each section */
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0; /* Remove margin for the last section */
+        }
+
+        .header {
+            height: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px; /* Fixed font size */
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            box-sizing: border-box;
+            position: relative;
+            background-color: #fff; /* Default background color */
+        }
+
+        .header img.phone-icon {
+            position: absolute;
+            right: 10px; /* Adjust as needed */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 180px; /* Updated size */
+            height: auto;
+        }
+
+        .header .sponsors {
+            position: absolute;
+            left: 10px; /* Adjust as needed */
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header .sponsors img {
+            width: 65px; /* Size for sponsor1 */
+            height: auto;
+            margin-bottom: 5px; /* Adjust spacing between images */
+        }
+
+        .header .sponsors img.sponsor2,
+        .header .sponsors img.sponsor3 {
+            width: 110px; /* Size for sponsor2 and sponsor3 */
+            height: auto;
+        }
+
+        .content {
+            height: 75%;
+            padding: 5mm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-size: cover; /* Adjust to cover the entire content area */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Ensure the image doesn't repeat */
+        }
+
+        .textbox {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-sizing: border-box;
+            background: none; /* No background */
+            border: none; /* No borders */
+        }
+
+        .textbox1 {
+            height: 35%;
+            font-size: 100px; /* Fixed font size */
+        }
+
+        .textbox2 {
+            height: 25%;
+            font-size: 55px; /* Fixed font size */
+        }
+
+        .empty-space {
+            height: 15%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align to the right */
+            position: relative;
+            padding-right: 10px; /* Space from the right edge */
+        }
+
+        .empty-space img {
+            width: 60px; /* Default size */
+            height: auto;
+            margin-left: 10px; /* Space between icons */
+        }
+
+        .empty-space img.food {
+            width: 60px; /* Size for food icon */
+        }
+
+        .empty-space img.drink,
+        .empty-space img.shape {
+            width: 60px; /* Size for other icons */
+        }
+
+        @media print {
+            body, html {
+                margin: 0;
+                padding: 0;
+            }
+            .a4-page {
+                box-shadow: none;
+                margin: 0;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page">
+        {% for section in sections %}
+        <div class="section" style="background-image: url('../{{ section.header }}.png');">
+            <div class="header" id="header-{{ loop.index }}">
+                <div class="sponsors">
+                    <img src="../sponsor1.png" alt="Sponsor 1" class="sponsor1">
+                    <img src="../sponsor2.png" alt="Sponsor 2" class="sponsor2">
+                    <img src="../sponsor3.png" alt="Sponsor 3" class="sponsor3">
+                </div>
+                {{ section.header }}
+                <img src="../phone.png" alt="Phone Icon" class="phone-icon" id="phone-icon-{{ loop.index }}">
+            </div>
+            <div class="content">
+                <div class="textbox textbox1">{{ section.textbox1 }}</div>
+                <div class="textbox textbox2">{{ section.textbox2 }}</div>
+                <div class="empty-space">
+                    <img src="../Food.png" alt="Food Icon" class="food">
+                    {% if section.drink == 'YES' %}
+                        <img src="../Drink.png" alt="Drink Icon" class="drink">
+                    {% endif %}
+                    {% if section.shape == 'Round' %}
+                        <img src="../Round.png" alt="Round Shape" class="shape">
+                    {% else %}
+                        <img src="../Rectangle.png" alt="Rectangle Shape" class="shape">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // JavaScript to set dynamic background colors and phone icons based on header values
+        document.addEventListener('DOMContentLoaded', function() {
+            var headerColors = {
+                '3 km': 'rgb(0,176,240)',
+                '7 km': 'rgb(255,255,255)',
+                '14 km': 'rgb(255,0,0)',
+                '22,5 km': 'rgb(255,192,0)',
+                'Maraton': 'rgb(255,192,0)',
+                'Kerékpár': 'rgb(255,192,0)'
+            };
+
+            var phoneIcons = {
+                '3 km': '../3 km phone.png',
+                '7 km': '../7 km phone.png',
+                '14 km': '../14 km phone.png'
+            };
+
+            document.querySelectorAll('.header').forEach(function(header) {
+                var headerText = header.textContent.trim();
+                if (headerColors[headerText]) {
+                    header.style.backgroundColor = headerColors[headerText];
+                }
+                var phoneIcon = header.querySelector('.phone-icon');
+                if (phoneIcons[headerText]) {
+                    phoneIcon.src = phoneIcons[headerText];
+                } else {
+                    phoneIcon.src = '../phone.png';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
